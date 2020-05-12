@@ -1,3 +1,4 @@
 # SD
-## Model trained: https://drive.google.com/file/d/1wh_Hc9mDT_pxVzgCVDp81bDyAF1n5wbn/view?usp=sharing
+## class_names: https://drive.google.com/open?id=1t_CbZRTgkXBvAYtbx-XvuRdmG66OjTPG
+## Model trained: https://drive.google.com/open?id=1r3tIegXiMCtnw6VRnRshKZufhE4SLRxO
 ## Accurency: 85.41% 

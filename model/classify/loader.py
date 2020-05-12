@@ -33,6 +33,17 @@ def load_and_normalize(data_dir):
 
     return dataloaders, class_names, dataset_sizes
 
+def load_to_predict(img):
+    data_transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+
+    norma_img = data_transform(img)
+    return norma_img
+
 if __name__ == '__main__':
 
     dataloader, class_names, dataset_sizes = load_and_normalize('.\\dataset')

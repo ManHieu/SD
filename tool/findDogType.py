@@ -8,7 +8,7 @@ class FindDogType():
     def __init__(self, database_url, model_path, class_name_path):
         self.types = []
         self.class_names = pickle.load(open('.\\class_names.pkl', 'rb'))
-        self.model = load_model('dog_classification_resnet.pth', self.class_names)
+        self.model, _ = load_model('dog_classification_resnet.pth', self.class_names)
         self._get_all_type(database_url)
     
     def _get_all_type(self, database_url):

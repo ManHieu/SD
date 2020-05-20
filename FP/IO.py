@@ -26,9 +26,6 @@ def db_to_df():
     else:
             cnx.close()
     
-list_post = db_to_df()
-post = [post for post in list_post if post[10]==0]
-find_post = [post for post in list_post if post[10]==1]
 
 
 

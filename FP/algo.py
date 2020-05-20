@@ -53,15 +53,18 @@ def get_point(post, search_post):
     if post[8] == search_post[8]:
         point += 1
     
+    # print(point)
     # check species dog
-    if post[1] == search_post[1]:
-        point += 1
+
+    if post[1] in search_post[1]:
+        point = point
     elif post[1] == 'Không rõ' or search_post[1] == 'Không rõ':
-        point += 0.5
+        point = 0.8*point
     else:
-        point = 0.3* point
-    
+        point = 0.2*point
+    # print(point)
     similar_per = point/8
+    # print(similar_per)
 
     # check image
     dog_post_1 = io.BytesIO(post[9])
@@ -71,7 +74,7 @@ def get_point(post, search_post):
     vector_2 = img_to_vec(dog_post_2).numpy()
 
     distance = get_distance(vector_1, vector_2)
-
+    # print(distance)
     # post + img: 1-1
     post_similar_percent = (similar_per + distance)/2
     return post_similar_percent
@@ -84,11 +87,8 @@ def get_list_post(list_post, search_post):
     sort_list_point = sorted(list_point.items(), key= lambda p: (p[1], p[0]), reverse= True)
     return sort_list_point
 
-# get list post similar
-similar_post_list = get_list_post(list_post, find_post[0])
-similar_post_list = np.asarray(similar_post_list)
-for p in similar_post_list:
-    print('Id: ',p[0][0],'---point: ', p[1])
+
+
 
 
 

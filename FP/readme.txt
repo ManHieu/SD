@@ -1,4 +1,5 @@
-run file main.py
+run file main.py 
+$ python3 main.p
 output: List of post have been Sorted - Type: DataFrame
 example: 
     Id            Species  Weight  Height Color Accessory        Area        Time     Status  Similarity Rate
@@ -17,4 +18,4 @@ To get an attribute of first Post (example: Species):
 try: outputs.loc[0]['Species']
   -->  Affenpinscher
 
-  
+  y

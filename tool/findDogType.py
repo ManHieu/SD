@@ -1,21 +1,59 @@
 import mysql.connector
 from mysql.connector import errorcode
+from torchvision import transforms
 import re
 import pickle
-from model.classify.eval import *
+import torch
+from torchvision import models
+import torch.nn as nn
+
+
+def load_model(model_path, class_names):
+    num_class = len(class_names)
+    model_ft = models.resnet101(pretrained=True)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, num_class)
+    model_ft.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+
+    modules = list(model_ft.children())[:-1]
+    model_extract = nn.Sequential(*modules)
+    return model_ft, model_extract
+
+def load_to_predict(img):
+    data_transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+
+    norma_img = data_transform(img)
+    return norma_img
+
+def predict(model, class_names, img):
+    model.eval()
+    normal_img = load_to_predict(img)
+    normal_img.unsqueeze_(dim=0) 
+    output = model(normal_img)
+    _, pred = torch.topk(output, 3, 1)
+    pred = pred.data.squeeze().tolist()
+    predict_class = [class_names[k] for k in pred]
+    return predict_class
+
+
 
 class FindDogType():
     def __init__(self, database_url, model_path, class_name_path):
         self.types = []
         self.class_names = pickle.load(open('.\\class_names.pkl', 'rb'))
-        self.model, _ = load_model('dog_classification_resnet.pth', self.class_names)
+        self.model, _ = load_model('.\\dog_classification_resnet.pth', self.class_names)
         self._get_all_type(database_url)
     
-    def _get_all_type(self, database_url):
+    def _get_all_type(self, database_url='localhost'):
         
         try:
             cnx = mysql.connector.connect(user='root', password='270898', 
-                                        host='localhost', database='muti_media_db')
+                                        host=database_url, database='muti_media_db')
             cursor = cnx.cursor()
             query = ("SELECT type FROM dog_type")
             cursor.execute(query)
@@ -32,15 +70,14 @@ class FindDogType():
         else:
             cnx.close()
         
-    def find_dog_type(self, img=None, tag=None):
+    def find_dog_type(self, img_s=None, tag_s=None):
         tag = []
         img = []
-        
         if tag != None:
-            tag = self._find_dog_type_from_tag(tag)
+            tag = self._find_dog_type_from_tag(tag_s)
 
         if img != None:
-            img =  self._find_dog_type_from_img(img)
+            img =  self._find_dog_type_from_img(img_s)
         
         result = set(tag).intersection(set(img))
         return result
@@ -63,3 +100,16 @@ class FindDogType():
             scores.append((typ, score))
         scores.sort(key=lambda x: x[1], reverse=True)[:5]
         return [typ for (typ, score) in scores]
+
+
+if __name__ == '__main__':
+    dog_type = FindDogType('', '', '')
+
+
+    from PIL import Image
+    import io
+    with open("..\\dataset\\val\\n02085620-Chihuahua\\n02085620_588.jpg", 'rb') as f:
+        image_bytes = f.read()
+        image = Image.open(io.BytesIO(image_bytes))
+        typ = dog_type._find_dog_type_from_img(image)
+        print(typ)

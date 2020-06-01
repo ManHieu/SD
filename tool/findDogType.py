@@ -80,7 +80,7 @@ class FindDogType():
             img =  self._find_dog_type_from_img(img_s)
         
         result = set(tag).intersection(set(img))
-        return result
+        return list(result)
         
 
     def _find_dog_type_from_img(self, img):
@@ -88,19 +88,21 @@ class FindDogType():
         return types
 
     def _compare_str(self, str1, str2):
-        score = sum(c1!=c2 for c1, c2 in zip(str1, str2)) + + abs(len(str1) - len(str2))
+        score = sum(c1!=c2 for c1, c2 in zip(str1, str2)) + abs(len(str1) - len(str2))
+
         return score
 
     def _find_dog_type_from_tag(self, tag):
         tag = re.sub(r'\W+','', tag).lower()
         scores = []
         for typ in self.types:
-            normal_typ = re.sub(r'\W+','', typ).lower()
+            normal_typ = ' '.join(typ.split('-')[1:])
+            normal_typ = re.sub(r'\W+','', normal_typ).lower()
             score = self._compare_str(tag, normal_typ)
             # print(score)
             scores.append((typ, score))
-        scores_sorted = sorted(scores, key=lambda x: x[1], reverse=True)[:5]
-        print(scores_sorted)
+        scores_sorted = sorted(scores, key=lambda x: x[1])[:5]
+        # print(scores_sorted)
         return [typ for (typ, score) in scores_sorted]
 
 
@@ -113,5 +115,11 @@ if __name__ == '__main__':
     with open("..\\dataset\\val\\n02085620-Chihuahua\\n02085620_588.jpg", 'rb') as f:
         image_bytes = f.read()
         image = Image.open(io.BytesIO(image_bytes))
-        typ = dog_type._find_dog_type_from_tag('image')
+        typ_image = dog_type._find_dog_type_from_img(image)
+        print(typ_image)
+        typ = dog_type._find_dog_type_from_tag('Chiuahua')
         print(typ)
+
+        intersection = dog_type.find_dog_type(image, 'Chiuahua')
+        print(intersection)
+

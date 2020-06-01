@@ -97,9 +97,11 @@ class FindDogType():
         for typ in self.types:
             normal_typ = re.sub(r'\W+','', typ).lower()
             score = self._compare_str(tag, normal_typ)
+            # print(score)
             scores.append((typ, score))
-        scores.sort(key=lambda x: x[1], reverse=True)[:5]
-        return [typ for (typ, score) in scores]
+        scores_sorted = sorted(scores, key=lambda x: x[1], reverse=True)[:5]
+        print(scores_sorted)
+        return [typ for (typ, score) in scores_sorted]
 
 
 if __name__ == '__main__':
@@ -111,5 +113,5 @@ if __name__ == '__main__':
     with open("..\\dataset\\val\\n02085620-Chihuahua\\n02085620_588.jpg", 'rb') as f:
         image_bytes = f.read()
         image = Image.open(io.BytesIO(image_bytes))
-        typ = dog_type._find_dog_type_from_img(image)
+        typ = dog_type._find_dog_type_from_tag('image')
         print(typ)

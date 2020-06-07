@@ -51,6 +51,6 @@ def get_distance(vector_1, vector_2):
     cos_dist = dot / (norm_1 * norm_2)
     return cos_dist
 
-class_names = pickle.load(open('/home/hieu/data/20192/csdldpt/SD/db/class_names.pkl', 'rb'))
-model, extracter = load_model('/home/hieu/data/20192/csdldpt/SD/db/dog_classification_resnet.pth', class_names)
+class_names = pickle.load(open('/home/hieu/data/20192/dpt/SD/class_names.pkl', 'rb'))
+model, extracter = load_model('/home/hieu/data/20192/dpt/SD/dog_classification_resnet.pth', class_names)
 

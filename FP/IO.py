@@ -6,7 +6,7 @@ import io
 
 def db_to_df():
     try:
-        cnx = pymysql.connect(user='root', password='khanh', 
+        cnx = pymysql.connect(user='root', password='root', 
                                     host='localhost', database='PostFindDog')
         cursor = cnx.cursor()
         query = ("SELECT * FROM Post")
